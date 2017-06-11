@@ -1,4 +1,4 @@
-package com.rentord.model;
+package com.rent_ord.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
