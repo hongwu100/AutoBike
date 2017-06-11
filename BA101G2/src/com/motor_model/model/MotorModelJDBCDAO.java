@@ -376,21 +376,20 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 
 		
 
-//		MotorModelVO mmVO3 = dao.findByPrimaryKey("MM000004");
-//		System.out.println(mmVO3.getModtype()+",");
-//		System.out.println(mmVO3.getBrand()+",");
-//		System.out.println(mmVO3.getDisplacement()+",");
-//		System.out.println(mmVO3.getName()+",");
-//		System.out.println(mmVO3.getRenprice()+",");
-//		System.out.println(mmVO3.getSaleprice()+",");
-
-//		readPicture(mmVO3.getMotpic());		
+		MotorModelVO mmVO3 = dao.findByPrimaryKey("MM000004");
+		System.out.println(mmVO3.getModtype()+",");
+		System.out.println(mmVO3.getBrand()+",");
+		System.out.println(mmVO3.getDisplacement()+",");
+		System.out.println(mmVO3.getName()+",");
+		System.out.println(mmVO3.getRenprice()+",");
+		System.out.println(mmVO3.getSaleprice()+",");
+		readPicture(mmVO3.getMotpic());		
 	
 	
-		List<MotorModelVO> list = dao.getAll();
-		for (MotorModelVO aMM : list) {
-		printMethod(aMM);
-		}
+//		List<MotorModelVO> list = dao.getAll();
+//		for (MotorModelVO aMM : list) {
+//		printMethod(aMM);
+//		}
 		
 				
 	}
@@ -402,16 +401,17 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 		System.out.println("getName :"+aMM.getName() +",");	
 		System.out.println("getRenprice :"+aMM.getRenprice() +",");
 		System.out.println("getSaleprice :"+aMM.getSaleprice() +",");		
-		//readPicture(aMM.getMotpic());	
-		System.out.println("getMotpic 未讀取");
+		readPicture(aMM.getMotpic());	
+		//System.out.println("getMotpic 未讀取");
 		System.out.println();
 		
 	}
 
-	//???????????
+	 //???????????
 	private static void readPicture(byte[] motpic) {
 		try {
-			FileOutputStream fos = new FileOutputStream("C://tomcat.gif");
+			//不給放在根目錄，一定要有資料夾???
+			FileOutputStream fos = new FileOutputStream("C://temp//0001.gif");
 			fos.write(motpic);
 			fos.flush();
 			fos.close();
