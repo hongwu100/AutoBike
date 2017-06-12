@@ -333,24 +333,30 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 
 		MotorModelJDBCDAO dao = new MotorModelJDBCDAO();
 
+		
+		for(int i=0;i<20;i++){
 	
-//		MotorModelVO mmVO1 = new MotorModelVO();
-//		mmVO1.setBrand("setBrand");
-//		mmVO1.setDisplacement(125);
-//		mmVO1.setName("name");
-//		mmVO1.setRenprice(1000);
-//		mmVO1.setSaleprice(2000);
-//		byte[] pic;
-//		
-//		try {
-//			pic = getPictureByteArray("C://tomcat.gif");
-//			mmVO1.setMotpic(pic);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		dao.insert(mmVO1);
-//		System.out.println("insert ok");		
+			MotorModelVO mmVO1 = new MotorModelVO();
+			mmVO1.setBrand("setBrand"+i);
+			mmVO1.setDisplacement(125+i);
+			mmVO1.setName("name"+i);
+			mmVO1.setRenprice(1000+i);
+			mmVO1.setSaleprice(2000+i);
+			byte[] pic;
+			
+
+			try {
+				pic = getPictureByteArray("C://tomcat.gif");
+				mmVO1.setMotpic(pic);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			dao.insert(mmVO1);
+		}
+		
+		
+		System.out.println("insert ok");		
 
 //		MotorModelVO mmVO2 = new MotorModelVO();
 //		mmVO2.setBrand("setBrand");
@@ -376,14 +382,14 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 
 		
 
-		MotorModelVO mmVO3 = dao.findByPrimaryKey("MM000004");
-		System.out.println(mmVO3.getModtype()+",");
-		System.out.println(mmVO3.getBrand()+",");
-		System.out.println(mmVO3.getDisplacement()+",");
-		System.out.println(mmVO3.getName()+",");
-		System.out.println(mmVO3.getRenprice()+",");
-		System.out.println(mmVO3.getSaleprice()+",");
-		readPicture(mmVO3.getMotpic());		
+//		MotorModelVO mmVO3 = dao.findByPrimaryKey("MM000004");
+//		System.out.println(mmVO3.getModtype()+",");
+//		System.out.println(mmVO3.getBrand()+",");
+//		System.out.println(mmVO3.getDisplacement()+",");
+//		System.out.println(mmVO3.getName()+",");
+//		System.out.println(mmVO3.getRenprice()+",");
+//		System.out.println(mmVO3.getSaleprice()+",");
+//		readPicture(mmVO3.getMotpic());		
 	
 	
 //		List<MotorModelVO> list = dao.getAll();
