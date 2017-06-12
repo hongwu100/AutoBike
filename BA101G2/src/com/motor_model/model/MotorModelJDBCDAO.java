@@ -17,13 +17,17 @@ import java.util.List;
 public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "ba10102";
+	String userid = "servlet";
 	String passwd = "123456";
 	
 	
+//	private static final String INSERT_STMT = "INSERT INTO MOTOR_MODEL"+
+//	" (modtype, brand, displacement, name, renprice, saleprice, motpic"+ 
+//	") VALUES ('MMH'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?,?)";
+
 	private static final String INSERT_STMT = "INSERT INTO MOTOR_MODEL"+
-	" (modtype, brand, displacement, name, renprice, saleprice, motpic"+ 
-	") VALUES ('MM'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?,?)";
+	" (modtype, brand, displacement, name, renprice, saleprice "+ 
+	") VALUES ('MMH'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?)";	
 	
 	private static final String UPDATE = "UPDATE MOTOR_MODEL set brand=?,"+
 	" displacement=?, name=?, renprice=?, saleprice=?, motpic=? where modtype = ?";
@@ -52,7 +56,7 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 			pstmt.setString(3, mmVO.getName());
 			pstmt.setInt(4, mmVO.getRenprice());			
 			pstmt.setInt(5, mmVO.getSaleprice());			
-			pstmt.setBytes(6, mmVO.getMotpic());			
+			//pstmt.setBytes(6, mmVO.getMotpic());			
 					
 			pstmt.executeUpdate();
 
@@ -334,23 +338,22 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 		MotorModelJDBCDAO dao = new MotorModelJDBCDAO();
 
 		
-		for(int i=0;i<20;i++){
+		for(int i=1;i<10;i++){
 	
 			MotorModelVO mmVO1 = new MotorModelVO();
-			mmVO1.setBrand("setBrand"+i);
-			mmVO1.setDisplacement(125+i);
-			mmVO1.setName("name"+i);
-			mmVO1.setRenprice(1000+i);
-			mmVO1.setSaleprice(2000+i);
-			byte[] pic;
-			
-
-			try {
-				pic = getPictureByteArray("C://tomcat.gif");
-				mmVO1.setMotpic(pic);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			mmVO1.setBrand("setBrand");
+			mmVO1.setDisplacement(300);
+			mmVO1.setName("name");
+			mmVO1.setRenprice(1000);
+			mmVO1.setSaleprice(300000);
+//			byte[] pic;
+//			
+//			try {
+//				pic = getPictureByteArray("C://motor//H00"+i+".jpg");
+//				mmVO1.setMotpic(pic);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 	
 			dao.insert(mmVO1);
 		}
