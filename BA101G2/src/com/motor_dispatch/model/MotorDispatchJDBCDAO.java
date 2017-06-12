@@ -14,7 +14,7 @@ import java.util.Set;
 public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "ba10102";
+	String userid = "servlet";
 	String passwd = "123456";
 	
 	private static final String INSERT_STMT = "INSERT INTO MOTOR_DISPATCH"+
