@@ -6,16 +6,15 @@ import java.util.Set;
 
 public class RentOrdService {
 	private RentOrdDAO_interface dao;
-	
-	public RentOrdService(){
+
+	public RentOrdService() {
 		dao = new RentOrdDAO();
 	}
-	
 
-	public RentOrdVO addRentOrd(String rentno, String memno, String motno, String slocno, String rlocno, Integer milstart,
-			Integer milend, Timestamp filldate, Timestamp startdate, Timestamp enddate, Timestamp returndate,
-			Integer fine, Integer total, String rank, String status, String note){
-		
+	public RentOrdVO addRentOrd(String rentno, String memno, String motno, String slocno, String rlocno,
+			Integer milstart, Integer milend, Timestamp filldate, Timestamp startdate, Timestamp enddate,
+			Timestamp returndate, Integer fine, Integer total, String rank, String status, String note) {
+
 		RentOrdVO roVO = new RentOrdVO();
 		roVO.setRentno(rentno);
 		roVO.setMemno(memno);
@@ -37,10 +36,10 @@ public class RentOrdService {
 
 		return roVO;
 	}
-	
-	public RentOrdVO updateRentOrd(String rentno, String memno, String motno, String slocno, String rlocno, Integer milstart,
-			Integer milend, Timestamp filldate, Timestamp startdate, Timestamp enddate, Timestamp returndate,
-			Integer fine, Integer total, String rank, String status, String note){
+
+	public RentOrdVO updateRentOrd(String rentno, String memno, String motno, String slocno, String rlocno,
+			Integer milstart, Integer milend, Timestamp filldate, Timestamp startdate, Timestamp enddate,
+			Timestamp returndate, Integer fine, Integer total, String rank, String status, String note) {
 
 		RentOrdVO roVO = new RentOrdVO();
 		roVO.setRentno(rentno);
@@ -61,37 +60,39 @@ public class RentOrdService {
 		roVO.setNote(note);
 		dao.update(roVO);
 
-		return roVO;	
+		return roVO;
 	}
-	
-	public void delete(String rentno){
+
+	public void delete(String rentno) {
 		dao.delete(rentno);
 	}
 
-	public RentOrdVO findByPrimaryKey(String rentno){
+	public RentOrdVO findByPK(String rentno) {
 		return dao.findByPrimaryKey(rentno);
 	}
-	
-	
-	public List<RentOrdVO> getAll(){
+
+	public List<RentOrdVO> getAll() {
 		return dao.getAll();
 	}
-	
-	public Set<RentOrdVO> getRentalOrdersByStatus(String status){
+
+	public Set<RentOrdVO> getByStatus(String status) {
 		return dao.getRentalOrdersByStatus(status);
 	};
-	public Set<RentOrdVO> getRentalOrdersByRentLoc(String slocno){
+
+	public Set<RentOrdVO> getByRentLoc(String slocno) {
 		return dao.getRentalOrdersByRentLoc(slocno);
 	};
-	public Set<RentOrdVO> getRentalOrdersByReturnLoc(String rlocno){
+
+	public Set<RentOrdVO> getByReturnLoc(String rlocno) {
 		return dao.getRentalOrdersByReturnLoc(rlocno);
 	};
-	public Set<RentOrdVO> getRentalOrdersByStartDatePrioid(Timestamp start_time, Timestamp end_time){
-		return dao.getRentalOrdersByStartDatePrioid(start_time , end_time);
+
+	public Set<RentOrdVO> getByStartDatePrioid(Timestamp start_time, Timestamp end_time) {
+		return dao.getRentalOrdersByStartDatePrioid(start_time, end_time);
 	};
-	public Set<RentOrdVO> getRentalOrdersByEndDatePrioid(Timestamp start_time, Timestamp end_time){
-		return dao.getRentalOrdersByEndDatePrioid(start_time , end_time);
-	};	
-	
+
+	public Set<RentOrdVO> getByEndDatePrioid(Timestamp start_time, Timestamp end_time) {
+		return dao.getRentalOrdersByEndDatePrioid(start_time, end_time);
+	};
 
 }

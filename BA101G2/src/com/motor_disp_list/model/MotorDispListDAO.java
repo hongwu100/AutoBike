@@ -20,14 +20,12 @@ public class MotorDispListDAO implements MotorDispListDAO_interface {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	private static final String GET_ONE_BY_MODO = "SELECT mdno, motno "+
-			"  FROM MOTOR_DISP_LIST where mdno = ?";
-	
 
-	private static final String GET_ONE_BY_MOTNO = "SELECT mdno, motno "+
-			"  FROM MOTOR_DISP_LIST where motno = ?";
+	private static final String GET_ONE_BY_MODO = "SELECT mdno, motno " 
+			+ "  FROM MOTOR_DISP_LIST where mdno = ?";
+
+	private static final String GET_ONE_BY_MOTNO = "SELECT mdno, motno " 
+			+ "  FROM MOTOR_DISP_LIST where motno = ?";
 
 	@Override
 	public MotorDispListVO findByPrimaryKeyDispatchNo(String mdno) {
@@ -47,14 +45,13 @@ public class MotorDispListDAO implements MotorDispListDAO_interface {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				//也稱為 Domain objects
+				// 也稱為 Domain objects
 				mdlVO = new MotorDispListVO();
-				setAttirbute(mdlVO, rs); //拉出來寫成一個方法										
+				setAttirbute(mdlVO, rs); // 拉出來寫成一個方法
 			}
 
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 			// Clean up JDBC resources
 		} finally {
 			if (rs != null) {
@@ -84,29 +81,28 @@ public class MotorDispListDAO implements MotorDispListDAO_interface {
 
 	@Override
 	public MotorDispListVO findByPrimaryKeyMotorNo(String motno) {
-	
+
 		MotorDispListVO mdlVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-	
+
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE_BY_MOTNO);
-	
+
 			pstmt.setString(1, motno);
-	
+
 			rs = pstmt.executeQuery();
-	
+
 			while (rs.next()) {
-				//也稱為 Domain objects
+				// 也稱為 Domain objects
 				mdlVO = new MotorDispListVO();
-				setAttirbute(mdlVO, rs); //拉出來寫成一個方法										
+				setAttirbute(mdlVO, rs); // 拉出來寫成一個方法
 			}
 
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 			// Clean up JDBC resources
 		} finally {
 			if (rs != null) {

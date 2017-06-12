@@ -15,12 +15,9 @@ public class PictureInsert {
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String userid = "servlet";
 	String passwd = "123456";
-	
-	
-	private static final String UPDATE = "UPDATE MOTOR_MODEL set "+
-	"  motpic=? where modtype = ?";
-	
-	
+
+	private static final String UPDATE = "UPDATE MOTOR_MODEL set " + "  motpic=? where modtype = ?";
+
 	public void update(MotorModelVO mmVO) {
 
 		Connection con = null;
@@ -31,7 +28,7 @@ public class PictureInsert {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(UPDATE);
-						
+
 			pstmt.setBytes(1, mmVO.getMotpic());
 			pstmt.setString(2, mmVO.getModtype());
 
@@ -39,12 +36,10 @@ public class PictureInsert {
 
 			// Handle any driver errors
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 			// Handle any SQL errors
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 			// Clean up JDBC resources
 		} finally {
 			if (pstmt != null) {
@@ -64,35 +59,32 @@ public class PictureInsert {
 		}
 
 	}
-	
 
 	public static void main(String[] args) {
 
-		PictureInsert insert = new PictureInsert();
-		
-		for(int i=1001;i<1010;i++){
-			
+		MotorModelJDBCDAO dao = new MotorModelJDBCDAO();
+
+		for (int i = 1; i < 10; i++) {
+
 			MotorModelVO mmVO1 = new MotorModelVO();
-			mmVO1.setModtype("MMH00"+i);
-			
-			
+			mmVO1.setBrand("setBrand");
+			mmVO1.setDisplacement(300);
+			mmVO1.setName("name");
+			mmVO1.setRenprice(1000);
+			mmVO1.setSaleprice(300000);
 			byte[] pic;
+
 			try {
-				pic = getPictureByteArray("C://motor//H00"+i+".jpg");
+				pic = getPictureByteArray("C://motor//H00" + i + ".jpg");
 				mmVO1.setMotpic(pic);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
-			insert.update(mmVO1);
-			
-		}	
 
+			dao.insert(mmVO1);
+		}
 
 	}
-	
 
 	// 使用byte[]方式
 	public static byte[] getPictureByteArray(String path) throws IOException {
