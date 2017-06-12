@@ -1,144 +1,163 @@
 package com.member.model;
-import java.io.Serializable;
+
 import java.sql.Date;
+import java.sql.Timestamp;
 
-public class MemberVO implements Serializable {
-
-	private Integer mem_no;
-	private String mem_name;
-	private String mem_sex;
-	private String mem_mail;
-	private Integer mem_phone;
-	private String mem_addr;
-	private String mem_account;
-	private String mem_pwd;
-	private byte[] mem_id1;
-	private byte[] mem_id2;
-	private byte[] mem_license1;
-	private Date mem_birthday;
+public class MemberVO implements java.io.Serializable {
+	private String memno;
+	private String memname;
+	private String sex;
+	private Timestamp birth;
 	
-	private String mem_status;
+//use birthshow get birth's value;
+	private String showbirth;
+	
+	private String mail;
+	private Integer phone;
+	private String addr;
+	private String acc;
+	private String pwd;
+	private byte[] idcard1;
+	private byte[] idcard2;
+	private byte[] license;
+	private Timestamp credate;
+	
+//use credateshow get credate's value;
+	private String showcredate;
+	
+	private String status;
 
-	public MemberVO(){}
-
-	public MemberVO(Integer mem_no, String mem_name, String mem_sex, String mem_mail, Integer mem_phone, String mem_addr, String mem_account, String mem_pwd, byte[] mem_id1, byte[] mem_id2, byte[] mem_license1, Date mem_birthday, String mem_status){
-		this.mem_no = mem_no;
-		this.mem_name = mem_name;
-		this.mem_sex = mem_sex;
-		this.mem_mail = mem_mail;
-		this.mem_phone = mem_phone;
-		this.mem_addr = mem_addr;
-		this.mem_account = mem_account;
-		this.mem_pwd = mem_pwd;
-		this.mem_id1 = mem_id1;
-		this.mem_id2 = mem_id2;
-		this.mem_license1 = mem_license1;
-		this.mem_birthday = mem_birthday;
-		this.mem_status = mem_status;
+	public MemberVO() {
+		super();
 	}
 
-	public Integer getMemNo() {
-		return mem_no;
+	public String getMemno() {
+		return memno;
 	}
 
-	public void setMemNo(Integer mem_no) {
-		this.mem_no = mem_no;
+	public void setMemno(String memno) {
+		this.memno = memno;
 	}
 
-	public String getMemName() {
-		return mem_name;
+	public String getMemname() {
+		return memname;
 	}
 
-	public void setMemName(String mem_name) {
-		this.mem_name = mem_name;
+	public void setMemname(String memname) {
+		this.memname = memname;
 	}
 
-	public String getMemSex() {
-		return mem_sex;
+	public String getSex() {
+		return sex;
 	}
 
-	public void setMemSex(String mem_sex) {
-		this.mem_sex = mem_sex;
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+//----showbirth
+	public String getShowbirth() {
+		return showbirth;
 	}
 
-	public String getMemMail() {
-		return mem_mail;
+	public void setShowbirth(String showbirth) {
+		this.showbirth = showbirth;
+	}
+//----showbirth
+	public Timestamp getBirth() {
+		return birth;
 	}
 
-	public void setMemMail(String mem_mail) {
-		this.mem_mail = mem_mail;
+	public void setBirth(Timestamp birth) {
+		this.birth = birth;
 	}
 
-	public Integer getMemPhone() {
-		return mem_phone;
+	public String getMail() {
+		return mail;
 	}
 
-	public void setMemPhone(Integer mem_phone) {
-		this.mem_phone = mem_phone;
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 
-	public String getMemAddr() {
-		return mem_addr;
+	public Integer getPhone() {
+		return phone;
 	}
 
-	public void setMemAddr(String mem_addr) {
-		this.mem_addr = mem_addr;
+	public void setPhone(Integer phone) {
+		this.phone = phone;
 	}
 
-	public String getMemAccount() {
-		return mem_account;
+	public String getAddr() {
+		return addr;
 	}
 
-	public void setMemAccount(String mem_account) {
-		this.mem_account = mem_account;
+	public void setAddr(String addr) {
+		this.addr = addr;
 	}
 
-	public String getMemPwd() {
-		return mem_pwd;
+	public String getAcc() {
+		return acc;
 	}
 
-	public void setMemPwd(String mem_pwd) {
-		this.mem_pwd = mem_pwd;
+	public void setAcc(String acc) {
+		this.acc = acc;
 	}
 
-	public byte[] getMemId1() {
-		return mem_id1;
+	public String getPwd() {
+		return pwd;
 	}
 
-	public void setMemId1(byte[] mem_id1) {
-		this.mem_id1 = mem_id1;
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
 	}
 
-	public byte[] getMemId2() {
-		return mem_id2;
+	public byte[] getIdcard1() {
+		return idcard1;
 	}
 
-	public void setMemId2(byte[] mem_id2) {
-		this.mem_id2 = mem_id2;
+	public void setIdcard1(byte[] idcard1) {
+		this.idcard1 = idcard1;
 	}
 
-	public byte[] getMemLicense1() {
-		return mem_license1;
+	public byte[] getIdcard2() {
+		return idcard2;
 	}
 
-	public void setMemLicense1(byte[] mem_license1) {
-		this.mem_license1 = mem_license1;
+	public void setIdcard2(byte[] idcard2) {
+		this.idcard2 = idcard2;
 	}
 
-	public Date getMemBirthday() {
-		return mem_birthday;
+	public byte[] getLicense() {
+		return license;
 	}
 
-	public void setMemBirthday(Date mem_birthday) {
-		this.mem_birthday = mem_birthday;
+	public void setLicense(byte[] license) {
+		this.license = license;
 	}
 
-	public String getMemStatus() {
-		return mem_status;
+	public Timestamp getCredate() {
+		return credate;
 	}
 
-	public void setMemStatus(String mem_status) {
-		this.mem_status = mem_status;
+	public void setCredate(Timestamp credate) {
+		this.credate = credate;
+	}
+
+//-----showcredate
+	public String getShowcredate() {
+		return showcredate;
+	}
+	
+	public void setShowcredate(String showcredate) {
+		this.showcredate = showcredate;
+	}
+//-----showcredate	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }
