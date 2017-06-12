@@ -3,13 +3,17 @@ package com.motor_model.model;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
-public class PictureInsert {
+public class PictureInsert2 {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String userid = "servlet";
@@ -17,10 +21,12 @@ public class PictureInsert {
 
 	private static final String UPDATE = "UPDATE MOTOR_MODEL set " + "  motpic=? where modtype = ?";
 
+	
 	public void update(MotorModelVO mmVO) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		
 
 		try {
 
@@ -59,27 +65,51 @@ public class PictureInsert {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
+		String driver = "oracle.jdbc.driver.OracleDriver";
+		String url = "jdbc:oracle:thin:@localhost:1521:XE";
+		String userid = "servlet";
+		String passwd = "123456";
 
-		PictureInsert dao = new PictureInsert();
+		MotorModelJDBCDAO dao = new MotorModelJDBCDAO();
+		
+		
+		Connection con2 = null;
+		try {
+			Class.forName(driver);
+			con2 = DriverManager.getConnection(url, userid, passwd);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		Statement stmt = con2.createStatement();
+		
+		//請改成要置圖的TABLE，目前為MOTOR_MODEL
+		ResultSet rs2 = stmt.executeQuery("SELECT count(*) AS count FROM MOTOR_MODEL");
+		rs2.next();
+		int len = rs2.getInt("count"); 
+		//取到總欄數， 對應到該放幾張圖
 
-		for (int i = 100001; i < 100019; i++) {
 
-			MotorModelVO mmVO1 = new MotorModelVO();
-
-			byte[] pic;
-
-			try {
-				pic = getPictureByteArray("C://motor//M" + i + ".jpg");
-				mmVO1.setMotpic(pic);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			mmVO1.setModtype("MM" + i);
-
-			dao.update(mmVO1);
-		}
+//		for (int i = 1; i < 10; i++) {
+//
+//			MotorModelVO mmVO1 = new MotorModelVO();
+//			mmVO1.setBrand("setBrand");
+//			mmVO1.setDisplacement(300);
+//			mmVO1.setName("name");
+//			mmVO1.setRenprice(1000);
+//			mmVO1.setSaleprice(300000);
+//			byte[] pic;
+//
+//			try {
+//				pic = getPictureByteArray("C://motor//H00" + i + ".jpg");
+//				mmVO1.setMotpic(pic);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//
+//			dao.insert(mmVO1);
+//		}
 
 	}
 

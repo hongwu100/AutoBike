@@ -19,9 +19,14 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 	String userid = "servlet";
 	String passwd = "123456";
 
+//	private static final String INSERT_STMT = "INSERT INTO MOTOR_MODEL"
+//			+ " (modtype, brand, displacement, name, renprice, saleprice, motpic"
+//			+ ") VALUES ('MM'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?,?)";
+	
+	
 	private static final String INSERT_STMT = "INSERT INTO MOTOR_MODEL"
-			+ " (modtype, brand, displacement, name, renprice, saleprice, motpic"
-			+ ") VALUES ('MMH'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?,?)";
+			+ " (modtype, brand, displacement, name, renprice, saleprice "
+			+ ") VALUES ('MM'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?)";
 
 	private static final String UPDATE = "UPDATE MOTOR_MODEL set brand=?,"
 			+ " displacement=?, name=?, renprice=?, saleprice=?, motpic=? where modtype = ?";
@@ -50,7 +55,7 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 			pstmt.setString(3, mmVO.getName());
 			pstmt.setInt(4, mmVO.getRenprice());
 			pstmt.setInt(5, mmVO.getSaleprice());
-			pstmt.setBytes(6, mmVO.getMotpic());
+			//pstmt.setBytes(6, mmVO.getMotpic());
 
 			pstmt.executeUpdate();
 
@@ -318,7 +323,9 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 
 		MotorModelJDBCDAO dao = new MotorModelJDBCDAO();
 
-		for (int i = 1; i < 10; i++) {
+		
+//insert without picture
+		for (int i = 1; i < 19; i++) {
 
 			MotorModelVO mmVO1 = new MotorModelVO();
 			mmVO1.setBrand("setBrand");
@@ -326,14 +333,14 @@ public class MotorModelJDBCDAO implements MotorModelDAO_interface {
 			mmVO1.setName("name");
 			mmVO1.setRenprice(1000);
 			mmVO1.setSaleprice(300000);
-			byte[] pic;
-
-			try {
-				pic = getPictureByteArray("C://motor//H00" + i + ".jpg");
-				mmVO1.setMotpic(pic);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			byte[] pic;
+//
+//			try {
+//				pic = getPictureByteArray("C://motor//M" + i + ".jpg");
+//				mmVO1.setMotpic(pic);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 
 			dao.insert(mmVO1);
 		}
