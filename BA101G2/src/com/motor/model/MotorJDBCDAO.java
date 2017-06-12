@@ -6,12 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.motor_model.model.MotorVO;
 
 public class MotorJDBCDAO implements MotorDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
@@ -522,17 +521,17 @@ public class MotorJDBCDAO implements MotorDAO_interface {
 		MotorJDBCDAO dao = new MotorJDBCDAO();
 		// 新增		
 		
-		MotorVO motorVO1 = new MotorVO();
-		motorVO1.setModtype("modtype");
-		motorVO1.setPlateno("plateno");
-		motorVO1.setEngno("engno");		
-		motorVO1.setManudate(java.sql.Timestamp.valueOf("2016-01-01 10:10:10"));		
-		motorVO1.setMile(111);
-		motorVO1.setLocno("locno");
-		motorVO1.setStatus("status");		
-		motorVO1.setNote("note");
-		dao.insert(motorVO1);
-		System.out.println("insert ok");
+//		MotorVO motorVO1 = new MotorVO();
+//		motorVO1.setModtype("modtype");
+//		motorVO1.setPlateno("plateno");
+//		motorVO1.setEngno("engno");		
+//		motorVO1.setManudate(java.sql.Timestamp.valueOf("2016-01-01 10:10:10"));		
+//		motorVO1.setMile(111);
+//		motorVO1.setLocno("locno");
+//		motorVO1.setStatus("status");		
+//		motorVO1.setNote("note");
+//		dao.insert(motorVO1);
+//		System.out.println("insert ok");
 
 		
 /*		MotorVO motorVO2 = new MotorVO();		
@@ -554,18 +553,20 @@ public class MotorJDBCDAO implements MotorDAO_interface {
 		System.out.println("delete ok");*/
 		
 	
-/*		MotorVO motorVO3 = dao.findByPrimaryKey("M000000005");
-		System.out.println(motorVO3.getMotno() +",");
-		System.out.println(motorVO3.getModtype() +",");		
-		System.out.println(motorVO3.getPlateno() +",");
-		System.out.println(motorVO3.getEngno() +",");	
-		System.out.println(motorVO3.getManudate() +",");
-		System.out.println(motorVO3.getMile() +",");		
-		System.out.println(motorVO3.getLocno() +",");
-		System.out.println(motorVO3.getStatus() +",");		
-		System.out.println(motorVO3.getNote() +",");
-		System.out.println("query ok");
-		*/
+/**/		
+//		MotorVO motorVO3 = dao.findByPrimaryKey("M000000005");
+//		System.out.println(motorVO3.getMotno() +",");
+//		System.out.println(motorVO3.getModtype() +",");		
+//		System.out.println(motorVO3.getPlateno() +",");
+//		System.out.println(motorVO3.getEngno() +",");
+//		System.out.println(DateFormatter(motorVO3.getManudate()) +",");
+//		System.out.println(motorVO3.getMile() +",");		
+//		System.out.println(motorVO3.getLocno() +",");
+//		System.out.println(motorVO3.getStatus() +",");		
+//		System.out.println(motorVO3.getNote() +",");
+//		System.out.println("query ok");
+		
+		//轉成文字format要自己要的格式後輸出	DateFormatter	
 		
 
 //		List<MotorVO> list = dao.getAll();
@@ -596,6 +597,14 @@ public class MotorJDBCDAO implements MotorDAO_interface {
 		}
 				
 	}
+	
+	
+
+	private static String DateFormatter(Timestamp manudate) {
+		String showDate = new SimpleDateFormat("yyyy/MM/dd")
+				.format(manudate);
+		return showDate;
+	}
 
 	private static void printMethod(MotorVO aMotor) {
 			
@@ -603,7 +612,9 @@ public class MotorJDBCDAO implements MotorDAO_interface {
 		System.out.println("getModtype :"+aMotor.getModtype() +",");		
 		System.out.println("getPlateno :"+aMotor.getPlateno() +",");
 		System.out.println("getEngno :"+aMotor.getEngno() +",");	
-		System.out.println("getManudate :"+aMotor.getManudate() +",");
+
+		System.out.println("getManudate :"+DateFormatter(aMotor.getManudate()) +",");
+
 		System.out.println("getMile :"+aMotor.getMile() +",");		
 		System.out.println("getLocno :"+aMotor.getLocno() +",");
 		System.out.println("getStatus :"+aMotor.getStatus() +",");		

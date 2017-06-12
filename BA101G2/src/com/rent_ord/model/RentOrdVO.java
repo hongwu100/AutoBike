@@ -1,4 +1,5 @@
 package com.rent_ord.model;
+
 import java.sql.Timestamp;
 
 public class RentOrdVO implements java.io.Serializable {

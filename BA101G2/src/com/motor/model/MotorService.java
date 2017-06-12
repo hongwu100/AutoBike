@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
-import com.motor_model.model.MotorVO;
-
 
 public class MotorService {
 
