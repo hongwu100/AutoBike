@@ -1,17 +1,25 @@
 package com.motor_disp_list.model;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-
-public class MotorDispListJDBCDAO implements MotorDispListDAO_interface {
-	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "ba10102";
-	String passwd = "123456";
+public class MotorDispListJNDIDAO implements MotorDispListDAO_interface {
+	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	private static final String GET_ONE_BY_MODO = "SELECT mdno, motno "+
@@ -31,8 +39,7 @@ public class MotorDispListJDBCDAO implements MotorDispListDAO_interface {
 
 		try {
 
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE_BY_MODO);
 
 			pstmt.setString(1, mdno);
@@ -45,11 +52,6 @@ public class MotorDispListJDBCDAO implements MotorDispListDAO_interface {
 				setAttirbute(mdlVO, rs); //拉出來寫成一個方法										
 			}
 
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -89,9 +91,7 @@ public class MotorDispListJDBCDAO implements MotorDispListDAO_interface {
 		ResultSet rs = null;
 	
 		try {
-	
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE_BY_MOTNO);
 	
 			pstmt.setString(1, motno);
@@ -103,12 +103,7 @@ public class MotorDispListJDBCDAO implements MotorDispListDAO_interface {
 				mdlVO = new MotorDispListVO();
 				setAttirbute(mdlVO, rs); //拉出來寫成一個方法										
 			}
-	
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
+
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -146,22 +141,6 @@ public class MotorDispListJDBCDAO implements MotorDispListDAO_interface {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void main(String[] args) {
-
-		MotorDispListJDBCDAO dao = new MotorDispListJDBCDAO();
-
-		MotorDispListVO mdlVO1 = dao.findByPrimaryKeyDispatchNo("MD000002");			
-		System.out.println(mdlVO1.getMdno() +",");
-		System.out.println(mdlVO1.getMotno() +",");		
-		System.out.println("query by mdno ok");
-		
-		MotorDispListVO mdlVO2 = dao.findByPrimaryKeyMotorNo("M000003");			
-		System.out.println(mdlVO2.getMdno() +",");
-		System.out.println(mdlVO2.getMotno() +",");		
-		System.out.println("query by motno byok");		
-				
 	}
 
 }

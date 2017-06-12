@@ -1,7 +1,6 @@
 package com.motor_dispatch.model;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,13 +8,22 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-
-public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
-	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "ba10102";
-	String passwd = "123456";
+public class MotorDispatchJNDIDAO implements MotorDispatchDAO_interface {
+	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	private static final String INSERT_STMT = "INSERT INTO MOTOR_DISPATCH"+
 	" (mdno, locno, filldate, closeddate, prog"+ 
@@ -48,8 +56,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			
 			//mdno, locno, filldate, closeddate, prog
 
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(INSERT_STMT);
 
 			pstmt.setString(1, mdVO.getLocno());	
@@ -59,11 +66,6 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 				
 			pstmt.executeUpdate();
 
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -95,8 +97,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 		try {
 
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE);
 
 			pstmt.setString(1, mdVO.getLocno());
@@ -107,11 +108,6 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 			pstmt.executeUpdate();
 
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -143,8 +139,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 		try {
 
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 
 			// 1●設定於 pstmt.executeUpdate()之前
 			con.setAutoCommit(false);
@@ -159,11 +154,6 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			con.setAutoCommit(true);
 
 			
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
 		} catch (SQLException se) {
 			if (con != null) {
 				try {
@@ -205,8 +195,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 		try {
 
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE);
 
 			pstmt.setString(1, mdno);
@@ -219,11 +208,6 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 				setAttirbute(mdVO, rs); //拉出來寫成一個方法										
 			}
 
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -279,8 +263,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 		try {
 
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL);
 			rs = pstmt.executeQuery();
 
@@ -290,11 +273,6 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 				list.add(mdVO); // Store the row in the list
 			}
 
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -334,9 +312,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 		ResultSet rs = null;
 	
 		try {
-	
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_BY_LOC);
 			pstmt.setString(1, locno);
 			rs = pstmt.executeQuery();
@@ -346,12 +322,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 				setAttirbute(mdVO, rs); //拉出來寫成一個方法	
 				set.add(mdVO); // Store the row in the vector
 			}
-	
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
+
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -393,9 +364,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 		ResultSet rs = null;
 	
 		try {
-	
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_BY_PROG);
 			pstmt.setString(1, prog);
 			rs = pstmt.executeQuery();
@@ -405,12 +374,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 				setAttirbute(mdVO, rs); //拉出來寫成一個方法	
 				set.add(mdVO); // Store the row in the vector
 			}
-	
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. "
-					+ e.getMessage());
-			// Handle any SQL errors
+
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
@@ -438,75 +402,6 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			}
 		}
 		return set;
-	}
-
-	public static void main(String[] args) {
-
-		MotorDispatchJDBCDAO dao = new MotorDispatchJDBCDAO();
-		// 新增		
-		
-//		MotorDispatchVO mdVO1 = new MotorDispatchVO();
-//		mdVO1.setMdno("mdno");
-//		mdVO1.setLocno("locno");
-//		mdVO1.setFilldate(java.sql.Timestamp.valueOf("2016-01-01 10:10:10"));
-//		mdVO1.setCloseddate(java.sql.Timestamp.valueOf("2016-02-01 10:10:10"));
-//		mdVO1.setProg("request");
-//		dao.insert(mdVO1);
-//		System.out.println("insert ok");
-		
-//		MotorDispatchVO mdVO2 = new MotorDispatchVO();		
-//		mdVO2.setLocno("locno2");
-//		mdVO2.setFilldate(java.sql.Timestamp.valueOf("2017-01-01 10:10:10"));
-//		mdVO2.setCloseddate(java.sql.Timestamp.valueOf("2017-02-01 10:10:10"));
-//		mdVO2.setProg("rejected");
-//		mdVO2.setMdno("MD000004");
-//		dao.update(mdVO2);
-//		System.out.println("update ok");	
-		
-//		dao.delete("MD000005");
-//		System.out.println("delete ok");
-		
-	
-//		MotorDispatchVO mdVO1 = dao.findByPrimaryKey("MD000006");
-//		System.out.println(mdVO1.getMdno() +",");
-//		System.out.println(mdVO1.getLocno() +",");		
-//		System.out.println(mdVO1.getFilldate() +",");
-//		System.out.println(mdVO1.getCloseddate() +",");	
-//		System.out.println(mdVO1.getProg() +",");
-//		System.out.println("query ok");
-		
-		
-
-//		List<MotorDispatchVO> list = dao.getAll();
-//		System.out.println("=======================================");
-//		for (MotorDispatchVO aMD : list) {
-//			printMethod(aMD);
-//		}
-//		
-//
-//		Set<MotorDispatchVO> set1 = dao.getMotorDispatchsByLoc("locno2");
-//		System.out.println("=======================================");
-//		for (MotorDispatchVO aMD : set1) {
-//			printMethod(aMD);
-//		}
-//		
-		Set<MotorDispatchVO> set2 = dao.getMotorDispatchsByProg("rejected");
-		System.out.println("=======================================");
-		for (MotorDispatchVO aMD : set2) {
-			printMethod(aMD);
-		}
-						
-	}
-	
-	private static void printMethod(MotorDispatchVO aMD) {
-		
-		System.out.println(""+ aMD.getMdno()+",");
-		System.out.println(""+ aMD.getLocno()+",");
-		System.out.println(""+ aMD.getFilldate()+",");
-		System.out.println(""+ aMD.getCloseddate()+",");
-		System.out.println(""+ aMD.getProg()+",");
-		System.out.println();
-		
 	}
 
 }
