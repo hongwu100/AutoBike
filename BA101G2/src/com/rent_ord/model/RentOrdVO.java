@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class RentOrdVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String rentno;
 	private String memno;
 	private String motno;
@@ -14,16 +14,16 @@ public class RentOrdVO implements java.io.Serializable {
 	private Integer milend;
 	private Timestamp filldate;
 	private Timestamp startdate;
-	private Timestamp enddate;	
+	private Timestamp enddate;
 	private Timestamp returndate;
 	private Integer fine;
 	private Integer total;
 	private String rank;
 	private String status;
 	private String note;
-	
+
 	public RentOrdVO() {
- 
+
 	}
 
 	public String getRentno() {
@@ -153,5 +153,5 @@ public class RentOrdVO implements java.io.Serializable {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	
+
 }

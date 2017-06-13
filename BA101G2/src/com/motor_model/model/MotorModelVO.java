@@ -1,8 +1,9 @@
 package com.motor_model.model;
+
 public class MotorModelVO implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String modtype;
 	private String brand;
 	private Integer displacement;
@@ -10,7 +11,7 @@ public class MotorModelVO implements java.io.Serializable {
 	private Integer renprice;
 	private Integer saleprice;
 	private byte[] motpic;
-	
+
 	public MotorModelVO() {
 
 	}

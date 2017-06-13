@@ -1,60 +1,57 @@
-package com.motor_dispatch.model;
+package com.maint_rec.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
+public class MaintRecJDBCDAO implements MaintRecDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String userid = "servlet";
 	String passwd = "123456";
 
-	private static final String INSERT_STMT = "INSERT INTO MOTOR_DISPATCH" 
-			+ " (mdno, locno, filldate, closeddate, prog"
-			+ ") VALUES ('MD'||LPAD(TO_CHAR(mdno_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?)";
+	private static final String INSERT_STMT = "INSERT INTO MAINT_REC (maintno, motno, "
+			+ " startdate, enddate, cont) VALUES " 
+			+ "('MR'||LPAD(TO_CHAR(maintno_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?)";
 
-	private static final String UPDATE = "UPDATE MOTOR_DISPATCH set locno=?,"
-			+ " filldate=?, closeddate=?, prog=? where mdno = ?";
+	private static final String UPDATE = "UPDATE MAINT_REC set motno=?, startdate=?,"
+			+ " enddate=?, cont=? where maintno = ?";
 
-	private static final String DELETE = "DELETE FROM MOTOR_DISPATCH where mdno = ?";
+	private static final String DELETE = "DELETE FROM MAINT_REC where maintno = ?";
+	
+	private static final String GET_ALL = "SELECT maintno, motno, " 
+			+ " startdate, enddate, cont  FROM MAINT_REC";
 
-	private static final String GET_ONE = "SELECT mdno, locno, filldate,"
-			+ "  closeddate, prog FROM MOTOR_DISPATCH where mdno = ?";
+	private static final String GET_ONE = "SELECT maintno, motno, "
+			+ " startdate, enddate, cont  FROM MAINT_REC where maintno = ?";
 
-	private static final String GET_ALL = "SELECT mdno, locno, filldate," 
-			+ "  closeddate, prog FROM MOTOR_DISPATCH";
-
-	private static final String GET_BY_LOC = "SELECT mdno, locno, filldate,"
-			+ "  closeddate, prog FROM MOTOR_DISPATCH where locno = ?";
-
-	private static final String GET_BY_PROG = "SELECT mdno, locno, filldate,"
-			+ "  closeddate, prog FROM MOTOR_DISPATCH where prog = ?";
+	private static final String GET_BY_MOTOR = "SELECT maintno, motno, startdate,"
+			+ " enddate, cont FROM MAINT_REC where motno = ?";
 
 	@Override
-	public void insert(MotorDispatchVO mdVO) {
+	public void insert(MaintRecVO mrVO) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
 
 		try {
 
-			// mdno, locno, filldate, closeddate, prog
-
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(INSERT_STMT);
 
-			pstmt.setString(1, mdVO.getLocno());
-			pstmt.setTimestamp(2, mdVO.getFilldate());
-			pstmt.setTimestamp(3, mdVO.getCloseddate());
-			pstmt.setString(4, mdVO.getProg());
+			pstmt.setString(1, mrVO.getMotno());
+			pstmt.setTimestamp(2, mrVO.getStartdate());
+			pstmt.setTimestamp(3, mrVO.getEnddate());
+			pstmt.setString(4, mrVO.getCont());
 
 			pstmt.executeUpdate();
 
@@ -85,7 +82,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 	}
 
 	@Override
-	public void update(MotorDispatchVO mdVO) {
+	public void update(MaintRecVO mrVO) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -96,11 +93,11 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(UPDATE);
 
-			pstmt.setString(1, mdVO.getLocno());
-			pstmt.setTimestamp(2, mdVO.getFilldate());
-			pstmt.setTimestamp(3, mdVO.getCloseddate());
-			pstmt.setString(4, mdVO.getProg());
-			pstmt.setString(5, mdVO.getMdno());
+			pstmt.setString(1, mrVO.getMotno());
+			pstmt.setTimestamp(2, mrVO.getStartdate());
+			pstmt.setTimestamp(3, mrVO.getEnddate());
+			pstmt.setString(4, mrVO.getCont());
+			pstmt.setString(5, mrVO.getMaintno());
 
 			pstmt.executeUpdate();
 
@@ -131,7 +128,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 	}
 
 	@Override
-	public void delete(String mdno) {
+	public void delete(String maintno) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -145,7 +142,7 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			con.setAutoCommit(false);
 
 			pstmt = con.prepareStatement(DELETE);
-			pstmt.setString(1, mdno);
+			pstmt.setString(1, maintno);
 			pstmt.executeUpdate();
 
 			// 2●設定於 pstm.executeUpdate()之後
@@ -186,9 +183,9 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 	}
 
 	@Override
-	public MotorDispatchVO findByPrimaryKey(String mdno) {
+	public MaintRecVO findByPrimaryKey(String maintno) {
 
-		MotorDispatchVO mdVO = null;
+		MaintRecVO mrVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -199,14 +196,14 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(GET_ONE);
 
-			pstmt.setString(1, mdno);
+			pstmt.setString(1, maintno);
 
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				// 也稱為 Domain objects
-				mdVO = new MotorDispatchVO();
-				setAttirbute(mdVO, rs); // 拉出來寫成一個方法
+				mrVO = new MaintRecVO();
+				setAttirbute(mrVO, rs); // 拉出來寫成一個方法
 			}
 
 			// Handle any driver errors
@@ -239,27 +236,28 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 				}
 			}
 		}
-		return mdVO;
+		return mrVO;
 	}
 
-	private void setAttirbute(MotorDispatchVO mdVO, ResultSet rs) {
+	private void setAttirbute(MaintRecVO mrVO, ResultSet rs) {
 		try {
 
-			mdVO.setMdno(rs.getString("mdno"));
-			mdVO.setLocno(rs.getString("locno"));
-			mdVO.setFilldate(rs.getTimestamp("filldate"));
-			mdVO.setCloseddate(rs.getTimestamp("closeddate"));
-			mdVO.setProg(rs.getString("prog"));
+			mrVO.setMaintno(rs.getString("maintno"));
+			mrVO.setMotno(rs.getString("motno"));
+			mrVO.setStartdate(rs.getTimestamp("startdate"));
+			mrVO.setEnddate(rs.getTimestamp("enddate"));
+			mrVO.setCont(rs.getString("cont"));
 
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public List<MotorDispatchVO> getAll() {
-		List<MotorDispatchVO> list = new ArrayList<MotorDispatchVO>();
-		MotorDispatchVO mdVO = null;
+	public List<MaintRecVO> getAll() {
+		List<MaintRecVO> list = new ArrayList<MaintRecVO>();
+		MaintRecVO mrVO = null;
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -273,9 +271,9 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				mdVO = new MotorDispatchVO();
-				setAttirbute(mdVO, rs); // 拉出來寫成一個方法
-				list.add(mdVO); // Store the row in the list
+				mrVO = new MaintRecVO();
+				setAttirbute(mrVO, rs); // 拉出來寫成一個方法
+				list.add(mrVO); // Store the row in the list
 			}
 
 			// Handle any driver errors
@@ -311,9 +309,9 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 	}
 
 	@Override
-	public Set<MotorDispatchVO> getMotorDispatchsByLoc(String locno) {
-		Set<MotorDispatchVO> set = new LinkedHashSet<MotorDispatchVO>();
-		MotorDispatchVO mdVO = null;
+	public Set<MaintRecVO> getMaintRecByMotor(String motno) {
+		Set<MaintRecVO> set = new LinkedHashSet<MaintRecVO>();
+		MaintRecVO mrVO = null;
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -323,69 +321,14 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
-			pstmt = con.prepareStatement(GET_BY_LOC);
-			pstmt.setString(1, locno);
+			pstmt = con.prepareStatement(GET_BY_MOTOR);
+			pstmt.setString(1, motno);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				mdVO = new MotorDispatchVO();
-				setAttirbute(mdVO, rs); // 拉出來寫成一個方法
-				set.add(mdVO); // Store the row in the vector
-			}
-
-			// Handle any driver errors
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
-			// Handle any SQL errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-		return set;
-	}
-
-	@Override
-	public Set<MotorDispatchVO> getMotorDispatchsByProg(String prog) {
-		Set<MotorDispatchVO> set = new LinkedHashSet<MotorDispatchVO>();
-		MotorDispatchVO mdVO = null;
-
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-			pstmt = con.prepareStatement(GET_BY_PROG);
-			pstmt.setString(1, prog);
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				mdVO = new MotorDispatchVO();
-				setAttirbute(mdVO, rs); // 拉出來寫成一個方法
-				set.add(mdVO); // Store the row in the vector
+				mrVO = new MaintRecVO();
+				setAttirbute(mrVO, rs); // 拉出來寫成一個方法
+				set.add(mrVO); // Store the row in the vector
 			}
 
 			// Handle any driver errors
@@ -422,69 +365,64 @@ public class MotorDispatchJDBCDAO implements MotorDispatchDAO_interface {
 
 	public static void main(String[] args) {
 
-		MotorDispatchJDBCDAO dao = new MotorDispatchJDBCDAO();
+		MaintRecJDBCDAO dao = new MaintRecJDBCDAO();
 		// 新增
 
-		// MotorDispatchVO mdVO1 = new MotorDispatchVO();
-		// mdVO1.setLocno("locno2");
-		// mdVO1.setFilldate(java.sql.Timestamp.valueOf("2017-01-01 10:10:10"));
-		// mdVO1.setCloseddate(java.sql.Timestamp.valueOf("2017-02-01
+		// MaintRecVO mrVO1 = new MaintRecVO();
+		// mrVO1.setMotno("monto");
+		// mrVO1.setStartdate(java.sql.Timestamp.valueOf("2016-01-01
 		// 10:10:10"));
-		// mdVO1.setProg("closed");
-		// dao.insert(mdVO1);
+		// mrVO1.setEnddate(java.sql.Timestamp.valueOf("2016-02-01 10:10:10"));
+		// mrVO1.setCont("cont");
+		// dao.insert(mrVO1);
 		// System.out.println("insert ok");
-		//
-		// MotorDispatchVO mdVO2 = new MotorDispatchVO();
-		// mdVO2.setLocno("locno2");
-		// mdVO2.setFilldate(java.sql.Timestamp.valueOf("2017-01-01 10:10:10"));
-		// mdVO2.setCloseddate(java.sql.Timestamp.valueOf("2017-02-01
+
+		// MaintRecVO mrVO2 = new MaintRecVO();
+		// mrVO2.setMotno("monto3");
+		// mrVO2.setStartdate(java.sql.Timestamp.valueOf("2013-01-01
 		// 10:10:10"));
-		// mdVO2.setProg("rejected");
-		// mdVO2.setMdno("MD000004");
-		// dao.update(mdVO2);
+		// mrVO2.setEnddate(java.sql.Timestamp.valueOf("2013-02-01 10:10:10"));
+		// mrVO2.setCont("cont3");
+		// mrVO2.setMaintno("MR000002");
+		// dao.update(mrVO2);
 		// System.out.println("update ok");
 
-		// dao.delete("MD000005");
+		// dao.delete("MR000006");
 		// System.out.println("delete ok");
 
-		// MotorDispatchVO mdVO1 = dao.findByPrimaryKey("MD000006");
-		// System.out.println(mdVO1.getMdno() +",");
-		// System.out.println(mdVO1.getLocno() +",");
-		// System.out.println(mdVO1.getFilldate() +",");
-		// System.out.println(mdVO1.getCloseddate() +",");
-		// System.out.println(mdVO1.getProg() +",");
+		// MaintRecVO mrVO3 = dao.findByPrimaryKey("MR000005");
+		// System.out.println(mrVO3.getMaintno() +",");
+		// System.out.println(mrVO3.getMotno() +",");
+		// System.out.println(new
+		// SimpleDateFormat("yyyy/MM/dd").format(mrVO3.getStartdate()) +",");
+		// System.out.println(new
+		// SimpleDateFormat("yyyy/MM/dd").format(mrVO3.getEnddate()) +",");
+		// System.out.println(mrVO3.getCont() +",");
 		// System.out.println("query ok");
 
-		 List<MotorDispatchVO> list = dao.getAll();
-		 System.out.println("=======================================");
-		 for (MotorDispatchVO aMD : list) {
-		 printMethod(aMD);
-		 }
-		//
-		//
-		// Set<MotorDispatchVO> set1 = dao.getMotorDispatchsByLoc("locno2");
-		// System.out.println("=======================================");
-		// for (MotorDispatchVO aMD : set1) {
-		// printMethod(aMD);
-		// }
-		//
-//		Set<MotorDispatchVO> set2 = dao.getMotorDispatchsByProg("rejected");
-//		System.out.println("=======================================");
-//		for (MotorDispatchVO aMD : set2) {
-//			printMethod(aMD);
-//		}
+		List<MaintRecVO> list = dao.getAll();
+		System.out.println("=======================================");
+		for (MaintRecVO aMR : list) {
+			printMethod(aMR);
+		}
 
 	}
 
-	private static void printMethod(MotorDispatchVO aMD) {
+	private static void printMethod(MaintRecVO aMR) {
 
-		System.out.println("" + aMD.getMdno() + ",");
-		System.out.println("" + aMD.getLocno() + ",");
-		System.out.println("" + aMD.getFilldate() + ",");
-		System.out.println("" + aMD.getCloseddate() + ",");
-		System.out.println("" + aMD.getProg() + ",");
+		System.out.println("getMaintno :" + aMR.getMaintno() + ",");
+		System.out.println("getMotno :" + aMR.getMotno() + ",");
+		System.out.println("getStartdate :" + DateFormatter(aMR.getStartdate()) + ",");
+		System.out.println("getEnddate :" + DateFormatter(aMR.getEnddate()) + ",");
+		System.out.println("getEnddate :" + aMR.getCont() + ",");
+
 		System.out.println();
 
+	}
+
+	private static String DateFormatter(Timestamp manudate) {
+		String showDate = new SimpleDateFormat("yyyy/MM/dd").format(manudate);
+		return showDate;
 	}
 
 }

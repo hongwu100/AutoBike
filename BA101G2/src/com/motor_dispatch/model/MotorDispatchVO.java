@@ -1,10 +1,11 @@
 package com.motor_dispatch.model;
+
 import java.sql.Timestamp;
 
 public class MotorDispatchVO implements java.io.Serializable {
- 
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private String mdno;
 	private String locno;
 	private Timestamp filldate;
@@ -55,6 +56,4 @@ public class MotorDispatchVO implements java.io.Serializable {
 		this.prog = prog;
 	}
 
-	
-	
 }

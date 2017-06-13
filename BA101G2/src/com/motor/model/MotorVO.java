@@ -15,7 +15,7 @@ public class MotorVO implements java.io.Serializable {
 	private String locno;
 	private String status;
 	private String note;
-	
+
 	public MotorVO() {
 
 	}
@@ -91,5 +91,5 @@ public class MotorVO implements java.io.Serializable {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	
+
 }

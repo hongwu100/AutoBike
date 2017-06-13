@@ -1,24 +1,20 @@
-package com.motor_model.model;
+package com.maint_rec.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class MotorModelDAO implements MotorModelDAO_interface {
+public class MaintRecDAO implements MaintRecDAO_interface {
 	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
 	private static DataSource ds = null;
 	static {
@@ -30,23 +26,25 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 		}
 	}
 
-	private static final String INSERT_STMT = "INSERT INTO MOTOR_MODEL"
-			+ " (modtype, brand, displacement, name, renprice, saleprice, motpic"
-			+ ") VALUES ('MM'||LPAD(TO_CHAR(modtype_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?, ?,?)";
+	private static final String INSERT_STMT = "INSERT INTO MAINT_REC (maintno, motno, "
+			+ " startdate, enddate, cont) VALUES " 
+			+ "('MR'||LPAD(TO_CHAR(maintno_seq.NEXTVAL), 6,'0'), ?, ?, ?, ?)";
 
-	private static final String UPDATE = "UPDATE MOTOR_MODEL set brand=?,"
-			+ " displacement=?, name=?, renprice=?, saleprice=?, motpic=? where modtype = ?";
+	private static final String UPDATE = "UPDATE MAINT_REC set motno=?, startdate=?,"
+			+ " enddate=?, cont=? where maintno = ?";
 
-	private static final String DELETE = "DELETE FROM MOTOR_MODEL where modtype = ?";
+	private static final String DELETE = "DELETE FROM MAINT_REC where maintno = ?";
+	private static final String GET_ALL = "SELECT maintno, motno, " 
+			+ " startdate, enddate, cont  FROM MAINT_REC";
 
-	private static final String GET_ONE = "SELECT modtype, brand, displacement,"
-			+ "  name, renprice, saleprice, motpic FROM MOTOR_MODEL where modtype = ?";
+	private static final String GET_ONE = "SELECT maintno, motno, "
+			+ " startdate, enddate, cont  FROM MAINT_REC where maintno = ?";
 
-	private static final String GET_ALL = "SELECT modtype, brand, displacement,"
-			+ "  name, renprice, saleprice, motpic FROM MOTOR_MODEL";
+	private static final String GET_BY_MOTOR = "SELECT maintno, motno, startdate,"
+			+ " enddate, cont FROM MAINT_REC where motno = ?";
 
 	@Override
-	public void insert(MotorModelVO mmVO) {
+	public void insert(MaintRecVO mrVO) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -55,12 +53,11 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(INSERT_STMT);
-			pstmt.setString(1, mmVO.getBrand());
-			pstmt.setInt(2, mmVO.getDisplacement());
-			pstmt.setString(3, mmVO.getName());
-			pstmt.setInt(4, mmVO.getRenprice());
-			pstmt.setInt(5, mmVO.getSaleprice());
-			pstmt.setBytes(6, mmVO.getMotpic());
+
+			pstmt.setString(1, mrVO.getMotno());
+			pstmt.setTimestamp(2, mrVO.getStartdate());
+			pstmt.setTimestamp(3, mrVO.getEnddate());
+			pstmt.setString(4, mrVO.getCont());
 
 			pstmt.executeUpdate();
 
@@ -87,7 +84,7 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 	}
 
 	@Override
-	public void update(MotorModelVO mmVO) {
+	public void update(MaintRecVO mrVO) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -97,13 +94,11 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE);
 
-			pstmt.setString(1, mmVO.getBrand());
-			pstmt.setInt(2, mmVO.getDisplacement());
-			pstmt.setString(3, mmVO.getName());
-			pstmt.setInt(4, mmVO.getRenprice());
-			pstmt.setInt(5, mmVO.getSaleprice());
-			pstmt.setBytes(6, mmVO.getMotpic());
-			pstmt.setString(7, mmVO.getModtype());
+			pstmt.setString(1, mrVO.getMotno());
+			pstmt.setTimestamp(2, mrVO.getStartdate());
+			pstmt.setTimestamp(3, mrVO.getEnddate());
+			pstmt.setString(4, mrVO.getCont());
+			pstmt.setString(5, mrVO.getMaintno());
 
 			pstmt.executeUpdate();
 
@@ -130,20 +125,19 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 	}
 
 	@Override
-	public void delete(String modtype) {
+	public void delete(String maintno) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
 
 		try {
-
 			con = ds.getConnection();
 
 			// 1●設定於 pstmt.executeUpdate()之前
 			con.setAutoCommit(false);
 
 			pstmt = con.prepareStatement(DELETE);
-			pstmt.setString(1, modtype);
+			pstmt.setString(1, maintno);
 			pstmt.executeUpdate();
 
 			// 2●設定於 pstm.executeUpdate()之後
@@ -180,9 +174,9 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 	}
 
 	@Override
-	public MotorModelVO findByPrimaryKey(String modtype) {
+	public MaintRecVO findByPrimaryKey(String maintno) {
 
-		MotorModelVO mmVO = null;
+		MaintRecVO mrVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -192,16 +186,14 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE);
 
-			// modtype, brand, displacement, name, renprice, saleprice, motpic
-
-			pstmt.setString(1, modtype);
+			pstmt.setString(1, maintno);
 
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-
-				mmVO = new MotorModelVO();
-				setAttribute(mmVO, rs);
+				// 也稱為 Domain objects
+				mrVO = new MaintRecVO();
+				setAttirbute(mrVO, rs); // 拉出來寫成一個方法
 			}
 
 		} catch (SQLException se) {
@@ -230,13 +222,28 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 				}
 			}
 		}
-		return mmVO;
+		return mrVO;
+	}
+
+	private void setAttirbute(MaintRecVO mrVO, ResultSet rs) {
+		try {
+
+			mrVO.setMaintno(rs.getString("maintno"));
+			mrVO.setMotno(rs.getString("motno"));
+			mrVO.setStartdate(rs.getTimestamp("startdate"));
+			mrVO.setEnddate(rs.getTimestamp("enddate"));
+			mrVO.setCont(rs.getString("cont"));
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public List<MotorModelVO> getAll() {
-		List<MotorModelVO> list = new ArrayList<MotorModelVO>();
-		MotorModelVO mmVO = null;
+	public List<MaintRecVO> getAll() {
+		List<MaintRecVO> list = new ArrayList<MaintRecVO>();
+		MaintRecVO mrVO = null;
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -249,10 +256,9 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				mmVO = new MotorModelVO();
-				setAttribute(mmVO, rs); // 拉出來寫成一個方法
-				list.add(mmVO); // Store the row in the list
-
+				mrVO = new MaintRecVO();
+				setAttirbute(mrVO, rs); // 拉出來寫成一個方法
+				list.add(mrVO); // Store the row in the list
 			}
 
 		} catch (SQLException se) {
@@ -283,49 +289,54 @@ public class MotorModelDAO implements MotorModelDAO_interface {
 		return list;
 	}
 
-	private void setAttribute(MotorModelVO mmVO, ResultSet rs) {
+	@Override
+	public Set<MaintRecVO> getMaintRecByMotor(String motno) {
+		Set<MaintRecVO> set = new LinkedHashSet<MaintRecVO>();
+		MaintRecVO mrVO = null;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
 		try {
-			mmVO.setModtype(rs.getString("modtype"));
-			mmVO.setBrand(rs.getString("brand"));
-			mmVO.setDisplacement(rs.getInt("displacement"));
-			mmVO.setName(rs.getString("name"));
-			mmVO.setRenprice(rs.getInt("renprice"));
-			mmVO.setSaleprice(rs.getInt("saleprice"));
-			mmVO.setMotpic(rs.getBytes("motpic"));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_BY_MOTOR);
+			pstmt.setString(1, motno);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				mrVO = new MaintRecVO();
+				setAttirbute(mrVO, rs); // 拉出來寫成一個方法
+				set.add(mrVO); // Store the row in the vector
+			}
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
 		}
-
-	}
-
-	private static void readPicture(byte[] motpic) {
-		try {
-			// 不給放在根目錄，一定要有資料夾???
-			FileOutputStream fos = new FileOutputStream("C://temp//0001.gif");
-			fos.write(motpic);
-			fos.flush();
-			fos.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	// 使用byte[]方式
-	public static byte[] getPictureByteArray(String path) throws IOException {
-		File file = new File(path);
-		FileInputStream fis = new FileInputStream(file);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[8192];
-		int i;
-		while ((i = fis.read(buffer)) != -1) {
-			baos.write(buffer, 0, i);
-		}
-		baos.close();
-		fis.close();
-
-		return baos.toByteArray();
+		return set;
 	}
 
 }
